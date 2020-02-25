@@ -16,7 +16,6 @@ class EndpointProxy(object):
 
     def __init__(self, api, endpoint_url, schema_url):
         self._api = api
-        print(endpoint_url)
         self._endpoint_url = endpoint_url
         self._schema_url = schema_url
         self._resource = next(filter(None, reversed(endpoint_url.split('/')))) 
