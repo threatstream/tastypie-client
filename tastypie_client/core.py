@@ -1,7 +1,7 @@
 """Core"""
-#hello
+
 import pprint
-import urlparse
+import urllib.parse as urlparse 
 import urllib
 
 import requests
@@ -16,9 +16,10 @@ class EndpointProxy(object):
 
     def __init__(self, api, endpoint_url, schema_url):
         self._api = api
+        print(endpoint_url)
         self._endpoint_url = endpoint_url
         self._schema_url = schema_url
-        self._resource = filter(bool, endpoint_url.split('/'))[-1]
+        self._resource = next(filter(None, reversed(endpoint_url.split('/')))) 
 
     def __repr__(self):
         return '<EndpointProxy %s>' % self._api._get_url(self._resource)
@@ -188,7 +189,7 @@ class Service(object):
 
     def is_resource_url(self, obj):
         """Returns True if `obj` is a valid resource URL"""
-        return isinstance(obj, basestring) and \
+        return isinstance(obj, str) and \
                obj.startswith(self.base_path)
 
     def parse_resource_url(self, url):
@@ -306,7 +307,7 @@ class Api(object):
                 url += '%s/' % id
         if kw:
             for key, value in kw.items():
-                if isinstance(value, basestring):
+                if isinstance(value, str):
                     kw[key] = value.encode('utf-8')
             url += '?' + urllib.urlencode(kw)
         return url
