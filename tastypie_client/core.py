@@ -216,7 +216,7 @@ class ListProxy(ResourceListMixin):
             if item:
                 # index is a slice object
                 slice = index
-                items = map(self._parse_item, item)
+                items = list(map(self._parse_item, item))
                 missing = {}
                 for index, item in enumerate(items):
                     if isinstance(item, ResourceProxy):
@@ -308,7 +308,7 @@ class Api(object):
             for key, value in kw.items():
                 if isinstance(value, str):
                     kw[key] = value.encode('utf-8')
-            url += '?' + urllib.urlencode(kw)
+            url += '?' + urlparse.urlencode(kw)
         return url
 
     def _parse_resource(self, resource):
@@ -329,7 +329,7 @@ class Api(object):
         return Resource(resource, type_, id_, url)
 
     def _parse_resources(self, resources):
-        return map(self._parse_resource, resources)
+        return list(map(self._parse_resource, resources))
 
     def _get(self, type=None, id=None, **kw):
         """Do a HTTP GET request"""
