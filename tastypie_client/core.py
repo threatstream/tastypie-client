@@ -1,7 +1,10 @@
 """Core"""
 
 import pprint
-import urllib.parse as urlparse 
+try:
+    import urllib.parse as urlparse 
+except Exception as e:
+    import urlparse
 import urllib
 
 import requests
