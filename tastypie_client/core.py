@@ -21,7 +21,7 @@ class EndpointProxy(object):
         self._api = api
         self._endpoint_url = endpoint_url
         self._schema_url = schema_url
-        self._resource = next(filter(None, reversed(endpoint_url.split('/')))) 
+        self._resource = list(filter(bool, url.split('/')))[-1]
 
     def __repr__(self):
         return '<EndpointProxy %s>' % self._api._get_url(self._resource)
