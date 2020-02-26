@@ -1,10 +1,7 @@
 """Core"""
 
 import pprint
-try:
-    import urllib.parse as urlparse 
-except Exception as e:
-    import urlparse
+import urlparse
 import urllib
 
 import requests
@@ -21,7 +18,7 @@ class EndpointProxy(object):
         self._api = api
         self._endpoint_url = endpoint_url
         self._schema_url = schema_url
-        self._resource = next(filter(None, reversed(endpoint_url.split('/')))) 
+        self._resource = filter(bool, endpoint_url.split('/'))[-1]
 
     def __repr__(self):
         return '<EndpointProxy %s>' % self._api._get_url(self._resource)
@@ -191,7 +188,7 @@ class Service(object):
 
     def is_resource_url(self, obj):
         """Returns True if `obj` is a valid resource URL"""
-        return isinstance(obj, str) and \
+        return isinstance(obj, basestring) and \
                obj.startswith(self.base_path)
 
     def parse_resource_url(self, url):
@@ -219,7 +216,7 @@ class ListProxy(ResourceListMixin):
             if item:
                 # index is a slice object
                 slice = index
-                items = list(map(self._parse_item, item))
+                items = map(self._parse_item, item)
                 missing = {}
                 for index, item in enumerate(items):
                     if isinstance(item, ResourceProxy):
@@ -309,9 +306,9 @@ class Api(object):
                 url += '%s/' % id
         if kw:
             for key, value in kw.items():
-                if isinstance(value, str):
+                if isinstance(value, basestring):
                     kw[key] = value.encode('utf-8')
-            url += '?' + urlparse.urlencode(kw)
+            url += '?' + urllib.urlencode(kw)
         return url
 
     def _parse_resource(self, resource):
@@ -332,7 +329,7 @@ class Api(object):
         return Resource(resource, type_, id_, url)
 
     def _parse_resources(self, resources):
-        return list(map(self._parse_resource, resources))
+        return map(self._parse_resource, resources)
 
     def _get(self, type=None, id=None, **kw):
         """Do a HTTP GET request"""
