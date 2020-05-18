@@ -331,11 +331,15 @@ class Api(object):
     def _parse_resources(self, resources):
         return map(self._parse_resource, resources)
 
-    def _get(self, type=None, id=None, **kw):
+    def _get(self, type=None, id=None, timeout=None, **kw):
         """Do a HTTP GET request"""
 
         url = self._get_url(type, id, **kw)
-        response = requests.get(url, auth=self._auth, params=self._params, verify=self._verify)
+        if timeout:
+            response = requests.get(url, auth=self._auth, params=self._params, verify=self._verify, timeout=timeout)
+        else:
+            response = requests.get(url, auth=self._auth, params=self._params, verify=self._verify)
+
         if response.status_code != 200:
             raise BadHttpStatus(response)
         raw_data = response.content
